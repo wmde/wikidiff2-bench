@@ -15,6 +15,7 @@ for($i= 0; $i<3; ++$i)  // take best of three
     if($time < $best)
         $best= $time;
 }
+//~ print $result;
 print $best;
 print "\n";
 

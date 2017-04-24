@@ -35,21 +35,27 @@ class document(object):
     # build permutation list
     def build_perm_(self):
         self.perm= []
+        self.perm2= []
         permleft= [ i for i in range(len(self.paras)) ]
+        permleft2= [ i for i in range(len(self.paras)) ]
         for i in range(len(self.paras)):
             k= random.randint(0, len(permleft)-1)
             self.perm.append(permleft[k])
             del permleft[k]
-        #~ print self.perm
+            k= random.randint(0, len(permleft2)-1)
+            self.perm2.append(permleft2[k])
+            del permleft2[k]
     
     # writes to path with n paragraphs exchanged
     def permutate(self, path, n):
-        permlist= [ i for i in range(len(self.paras)) ]
+        paralist= [ i for i in range(len(self.paras)) ]
         for i in range(n):
-            permlist[i]= self.perm[i]
-            permlist[self.perm[i]]= i
+            k= self.perm2[i]
+            paralist[k]= self.perm[k]
+            paralist[self.perm[k]]= k
+        #~ print permlist
         with open(path, "w") as f:
-            for p in permlist:
+            for p in paralist:
                 para= self.paras[p]
                 #~ print("para %s" % p)
                 for line in para.lines:
@@ -70,12 +76,17 @@ class document(object):
                     f.write(line)
 
 if __name__ == '__main__':
+    #~ doc= document("a.txt")
+    #~ doc.permutate("tmp.txt", 3)
+    #~ exit(0)
+    
+    
     sample= "enwiki-sample-1.txt"
     doc= document("enwiki-sample-1.txt")
     #~ doc.printparas()
     #~ doc.write("tmp.txt")
     
-    for i in range(0, 100):
+    for i in range(1, 100):
         #~ print i
         sys.stdout.flush()
         doc.permutate("tmp.txt", i)
