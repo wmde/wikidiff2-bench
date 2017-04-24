@@ -1,5 +1,6 @@
 #!/usr/bin/python
-import sys
+import os, sys
+import random
 
 class paragraph(object):
     def __init__(self, lines):
@@ -29,6 +30,30 @@ class document(object):
                 else:
                     para.append(line)
         self.paras.append(paragraph(para))
+        self.build_perm_()
+        
+    # build permutation list
+    def build_perm_(self):
+        self.perm= []
+        permleft= [ i for i in range(len(self.paras)) ]
+        for i in range(len(self.paras)):
+            k= random.randint(0, len(permleft)-1)
+            self.perm.append(permleft[k])
+            del permleft[k]
+        #~ print self.perm
+    
+    # writes to path with n paragraphs exchanged
+    def permutate(self, path, n):
+        permlist= [ i for i in range(len(self.paras)) ]
+        for i in range(n):
+            permlist[i]= self.perm[i]
+            permlist[self.perm[i]]= i
+        with open(path, "w") as f:
+            for p in permlist:
+                para= self.paras[p]
+                #~ print("para %s" % p)
+                for line in para.lines:
+                    f.write(line)
     
     def printparas(self):
         # quick check to see if paragraphs look ok
@@ -45,6 +70,13 @@ class document(object):
                     f.write(line)
 
 if __name__ == '__main__':
+    sample= "enwiki-sample-1.txt"
     doc= document("enwiki-sample-1.txt")
-    doc.printparas()
-    doc.write("tmp.txt")
+    #~ doc.printparas()
+    #~ doc.write("tmp.txt")
+    
+    for i in range(0, 100):
+        #~ print i
+        sys.stdout.flush()
+        doc.permutate("tmp.txt", i)
+        os.system("php dodiff.php %s tmp.txt" % sample)
