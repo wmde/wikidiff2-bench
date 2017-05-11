@@ -7,8 +7,13 @@ class paragraph(object):
         self.lines= lines
 
 class document(object):
-    def __init__(self, path):
+    def __init__(self):
         self.paras= []
+        
+    def clear(self):
+        self.paras= []
+    
+    def load(self, path):
         f= open(path, "r")
         para= []
         state= 0
@@ -31,6 +36,13 @@ class document(object):
                     para.append(line)
         self.paras.append(paragraph(para))
         self.build_perm_()
+    
+    def mkpara(self, word, wordcount):
+        return paragraph( [" ".join((word for i in range(wordcount)))+"\n"] + ["\n"] )
+    
+    def mkparas(self, word, wordcount, paracount):
+        for i in range(paracount):
+            self.paras.append(self.mkpara(word, wordcount))
         
     # build permutation list
     def build_perm_(self):
@@ -76,13 +88,43 @@ class document(object):
                     f.write(line)
 
 if __name__ == '__main__':
-    #~ doc= document("a.txt")
-    #~ doc.permutate("tmp.txt", 3)
+    doc= document()
+    wordA= "AAAAAAA"
+    wordB= "BBBBBBB"
+    
+    #~ doc.clear()
+    #~ doc.mkparas(wordA, 50, 10)
+    #~ doc.write("a.txt")
+    #~ doc.clear()
+    #~ for i in range(1, 5):
+        #~ doc.mkparas(wordA, 50, 1)
+        #~ doc.mkparas(wordB, 50, 1)
+    #~ doc.write("b.txt")
+    #~ os.system("php dodiff.php a.txt b.txt")
     #~ exit(0)
+    
+    wordsPerParagraph= 100
+    for i in range(1, 50):
+        doc.clear()
+        doc.mkparas(wordA, wordsPerParagraph, i)
+        doc.write("a.txt")
+        doc.clear()
+        doc.mkparas(wordB, wordsPerParagraph, i)
+        doc.write("b.txt")
+        os.system("php dodiff.php a.txt b.txt")
+        sys.stdout.flush()
+    #~ os.remove("a.txt")
+    #~ os.remove("b.txt")
+    exit(0)
+    
+    doc= document("a.txt")
+    doc.permutate("tmp.txt", 1)
+    exit(0)
     
     
     sample= "enwiki-sample-1.txt"
-    doc= document("enwiki-sample-1.txt")
+    doc= document()
+    doc.load("enwiki-sample-1.txt")
     #~ doc.printparas()
     #~ doc.write("tmp.txt")
     
